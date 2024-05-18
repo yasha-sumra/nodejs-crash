@@ -10,10 +10,12 @@ const server = http.createServer((req, res) => {
     // the below function re.writeHed() will do both the things it will set sattuscode  and also set the header's values (multiple value) . It will exapt two params 1. statuscode as first and 2. object of header's values as second.
 
 
-    res.writeHead(500, {
-        'content-type': 'application/json'
+    res.writeHead(200, {
+        'content-type': 'text/html'
     });
-    res.end(JSON.stringify({message:'Server error'}));
+
+    let element = "<h2> hello this is the res from http modules from node js  </h2>";
+    res.end(element);
 });
 
 server.listen(port, () => {
