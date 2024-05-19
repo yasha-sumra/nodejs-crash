@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "server1": "nodemon --env-file=.env server.js",
+    "server2": "nodemon --env-file=.env server2.js",
+    "api": "nodemon --env-file=.env api.js"
   },
   "keywords": [],
   "author": "",

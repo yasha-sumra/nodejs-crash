@@ -1,14 +1,14 @@
 import http from 'http';
 import fs from 'fs/promises';
 import url from 'url';
-import path  from 'path';
+import path from 'path';
 // const port = 8000;
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const port = process.env.PORT;
-const server = http.createServer((req, res) => {
+const port = process.env.PORT_FOR_SERVER2;
+const server = http.createServer( async (req, res) => {
 
     // res.setHeader('content-type', "text/plan"); // this line for setting the one response header with key : value
     // res.statusCode = 404; // this line is for sedding response with statuscode like 404, 500, 200 etc.
@@ -19,30 +19,25 @@ const server = http.createServer((req, res) => {
 
     try {
         if (req.method === 'GET') {
+            let FilePath ;
             if (req.url === '/') {
-                res.writeHead(200, {
-                    'content-type': 'text/html'
-                });
+              FilePath = path.join(__dirname, 'public', 'index.html');
 
-                res.write("HOME PAGE ");
-                res.end();
             } else if (req.url === '/about') {
-                res.writeHead(200, {
-                    "content-type": "text/html",
-                });
-
-                res.write("ABOUT PAGE");
-                res.end();
+                FilePath = path.join(__dirname, 'public', 'about.html');
             }
             else {
                 res.writeHead(404, {
                     'content-type': 'text/html'
                 });
-
                 res.write("page not found");
-
-                res.end();
             }
+
+            const file_content = await fs.readFile(FilePath);
+
+            res.setHeader("content-type" , 'text/html');
+            res.write(file_content);
+            res.end();
         } else {
             throw new Error('METHOD NOT ALLOWED');
         }
@@ -50,9 +45,7 @@ const server = http.createServer((req, res) => {
         res.writeHead(500, {
             'content-type': 'text/plain'
         });
-        
         res.write("server error");
-       
         res.end();
     }
 
