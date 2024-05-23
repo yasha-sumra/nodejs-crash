@@ -3,16 +3,13 @@ const posts = [
     { id: 2, title: 'post two' }
 ];
 
-const getPost = () => {
+ export const getPost = () => {
     return posts;
 }
 
-const getPostLength = () => {
-    posts.length;
+export const getPostLength = () => {
+  return posts.length;
 }
 
-export { getPost, getPostLength };
+
 export default getPost;
-// export{
-//     getPost,
-// }

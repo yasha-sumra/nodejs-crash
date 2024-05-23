@@ -17,4 +17,4 @@ import { getPost } from "./postController.js";
 // the below line of code is for importing everything which is exported from postController.js
 import * as postController from "./postController.js";
 console.log(getPost());
-console.log(postController);
+// console.log(postController.getPost());
