@@ -7,8 +7,10 @@ import path from 'path';
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+console.log(__filename, __dirname);
+
 const port = process.env.PORT_FOR_SERVER2;
-const server = http.createServer( async (req, res) => {
+const server = http.createServer(async (req, res) => {
 
     // res.setHeader('content-type', "text/plan"); // this line for setting the one response header with key : value
     // res.statusCode = 404; // this line is for sedding response with statuscode like 404, 500, 200 etc.
@@ -19,34 +21,35 @@ const server = http.createServer( async (req, res) => {
 
     try {
         if (req.method === 'GET') {
-            let FilePath ;
+            let FilePath;
             if (req.url === '/') {
-              FilePath = path.join(__dirname, 'public', 'index.html');
+                FilePath = path.join(__dirname, 'public', 'index.html');
 
             } else if (req.url === '/about') {
                 FilePath = path.join(__dirname, 'public', 'about.html');
             }
             else {
-                res.writeHead(404, {
-                    'content-type': 'text/html'
-                });
+                res.setHeader('content-type', 'text/plain');
                 res.write("page not found");
+                res.end();
             }
 
             const file_content = await fs.readFile(FilePath);
-
-            res.setHeader("content-type" , 'text/html');
+            console.log(FilePath);
+            res.setHeader("content-type", 'text/html');
             res.write(file_content);
             res.end();
         } else {
             throw new Error('METHOD NOT ALLOWED');
         }
     } catch (error) {
-        res.writeHead(500, {
-            'content-type': 'text/plain'
-        });
-        res.write("server error");
-        res.end();
+        if (!res.headersSent) {
+            res.writeHead(500, {
+                'content-type': 'text/plain'
+            });
+            res.write("server error");
+            res.end();
+        }
     }
 
 
