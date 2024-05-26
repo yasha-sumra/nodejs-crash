@@ -49,9 +49,29 @@ const notFoundHandler = (req, res) => {
 }
 
 const methodNotAllowed = (req, res) => {
-    runInNewContext.statusCode = 500;
+    res.statusCode = 500;
     res.write("Method Not Allowed");
-    res.end();
+    res.end(); 
+}
+
+const createUserHandler = (req, res) => {
+    let body = '';
+
+    console.log('body of req is ' );
+    console.log(req);
+    // Listen to data (here data is an even in req object ) ;
+    req.on('data', (chunk) => {
+        body += chunk.toString();
+    });
+
+    // Listen to end event; 
+    req.on('end' ,()=>{
+        const newUser = JSON.parse(body);
+        users.push(newUser);
+        res.statusCode = 201;
+        res.write(JSON.stringify(newUser));
+        res.end();
+    });
 }
 const users = [
     { id: 1, name: 'John doe' },
@@ -65,7 +85,7 @@ const server = http.createServer((req, res) => {
         jsonMiddleware(req, res, () => {
             try {
 
-                if (req.method === 'POST') {
+                if (req.method === 'GET') {
                     if (req.url === '/api/getuser') {
                         postUsersHandler(req, res);
                     } else if (req.url.match(/\/api\/user\/([0-9]+)/)) {
@@ -73,7 +93,13 @@ const server = http.createServer((req, res) => {
                     } else {
                         notFoundHandler(req, res)
                     }
-                } else {
+                } else if(req.method === 'POST'){
+                    if (req.url === '/api/create/user') {
+                        createUserHandler(req,res); 
+                    } else {
+                        notFoundHandler(req, res)
+                    }
+                }else {
                     methodNotAllowed(req, res);
                 }
             } catch (error) {
